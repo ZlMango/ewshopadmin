@@ -4,10 +4,16 @@
 import Layout from '@/layout/index.vue';
 
 // 从 vue-router 中引入数据结构
+// 基础路由里面增加开发者自定义属性 router.ts的RouteRecordRaw类型校验
 import {RouteRecordRaw} from 'vue-router'
 
 // 将路由的名称单独定义 因为需多次调用
-const routeName = 'dashboard'
+const routeName = 'users'
+
+// 引入图标
+import {PeopleCircle} from '@vicons/ionicons5'
+// 引入使用图标的方法
+import {renderIcon} from '@/utils'
 /*
 	@param name  路由名称 必须设置 且不能重名
 	@param meta  路由元数据(路由附带扩展信息)
@@ -18,36 +24,39 @@ const routeName = 'dashboard'
 	@param meta.keepAlive  缓存该路由
 	@param meta.sort  排序越小越排前
 */
-// 定义路由   限制该路由的数据类型为数组  限制该数组中的数据类型为泛型
+// 定义路由   限制该路由的数据类型为数组  数组中的内容结构为 RouteRecordRaw   RouteRecordRaw 定义的是数组中的数组包对象
+//  RouteRecordRaw类型校验  允许在基础路由里面增加开发者自定义属性。
 const routes:Array<RouteRecordRaw> = [
 	{
 		// 定义路由
-		path:'/dashboard',
+		path:'/users',
 		// 定义路由的名称
 		name: routeName,
 		// 注册组件
 		component:Layout,
 		// 拼接子路由
-		redirect:'/dashboard/console',
+		redirect:'/users/list',
 		// 定义路由的元数据
 		meta:{
 			// 定义路由的标题
-			title: 'Dashboard',
+			title: '用户管理',
 			// 定义路由的小图标
-			icon:'dashboard'
+			icon:renderIcon(PeopleCircle),
+			// 路由排序
+			sort:1
 		},
 		// 定义子路由
 		// children 中的所有的路由都会继承上级路由
 		children:[
 			{
-				path: 'console',
-				name:`${routeName}_console`,
+				path: 'list',
+				name:`${routeName}_list`,
 				meta:{
-					title:"主控台",
+					title:"用户列表",
 					icon:'console'
 				},
 				// 懒加载引入注册组件
-				component: () => import('@/views/dashboard/index.vue')
+				component: () => import('@/views/user/index.vue')
 			}
 		]
 	}

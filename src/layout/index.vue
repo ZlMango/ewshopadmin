@@ -24,8 +24,9 @@
 <script setup>
 import PageHeader from './components/PageHeader.vue'
 import PageSider from './components/PageSider.vue'
-/*import { useMessage } from 'naive-ui'
-window.$message = useMessage()*/
+// 引入提示消息的组件
+import { useMessage } from 'naive-ui'
+window.$message = useMessage()
 </script>
 
 <style scoped>

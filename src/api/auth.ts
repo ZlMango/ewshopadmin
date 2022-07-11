@@ -25,7 +25,7 @@ export function user(){
 export function logout(){
 	return request(
 		{
-			url: '/api/admin/logout',
+			url: '/api/auth/logout',
 			method: 'POST',
 		}
 	)

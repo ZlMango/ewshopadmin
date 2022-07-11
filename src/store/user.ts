@@ -39,7 +39,13 @@ export const useUserStore = defineStore({
 		getPermissions():string[]{
 			return this.permissions;
 		},
-		getInfo():Object{
+		getUserInfo():Object{
+			// 判断this.info是否是空对象
+			// if (this.info?.id){
+			//
+			// }else{
+			//
+			// }
 			return this.info;
 		}
 	},

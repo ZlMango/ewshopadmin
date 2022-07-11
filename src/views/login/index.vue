@@ -51,7 +51,13 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref} from 'vue';
+// 引入提示消息的组件
+import { useMessage } from 'naive-ui'
+// 创建消息提示的方法
+const message = useMessage()
+
+window.$message = useMessage()
+import {reactive, ref ,defineComponent} from 'vue';
 import {PersonOutline, LockClosedOutline} from '@vicons/ionicons5';
 // 在登录页中将pinia中的存储对象引入
 import {useUserStore} from '@/store/user'
@@ -95,21 +101,20 @@ const handleSubmit = (e: Event) => {
 						email: username,
 						password,
 				}
-				console.log(data)
 				// 执行登陆操作
 				userStore.login(data).then(res => {
 						// 关闭按钮的登录状态
 						loading.value = false
-						//弹出登录成功的提示
-						alert('登录成功')
+						console.log(data)
+						message.success('登录成功')
 						// 用户登录成功跳转到首页
-						// router.push({name:'dashboard'})
-						window.location.href = '/dashboard';
+						router.push({name:'dashboard'})
+						// window.location.href = 'dashboard';
 				}).catch(err => {
 						// 关闭按钮的登录状态
 						loading.value = false
 						//弹出登录失败的提示
-						alert('登录失败')
+						// message.warning('登录失败！请核对账号和密码后重新登录!')
 				})
 				// 成功后跳转到首页
 				// 失败后提示
