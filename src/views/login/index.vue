@@ -103,6 +103,7 @@ const handleSubmit = (e: Event) => {
 				}
 				// 执行登陆操作
 				userStore.login(data).then(res => {
+						console.log(res)
 						// 关闭按钮的登录状态
 						loading.value = false
 						console.log(data)

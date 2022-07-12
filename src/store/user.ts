@@ -7,90 +7,86 @@ import {login} from '@/api/auth'
 import {user} from '@/api/auth'
 
 // 定义接口 限制存储的类型结构
-export interface IUserStore{
+export interface IUserState {
 	token: string;
 	username: string;
 	avatar: string;
 	permissions: string[];
-	info:object;
+	info: Object;
 }
 // 定义存储对象
 export const useUserStore = defineStore({
-	// 定义一个id  这个id是必须的  作为第一个参数传递
 	id: 'app-user',
-	state: ():IUserStore => ({
-		token:localStorage.getItem('token') || '',
+	state: ():IUserState => ({
+		token: localStorage.getItem('token') || '',
 		username:'',
 		avatar:'',
-		permissions: [],
-		info: {}
+		permissions:[],
+		info:{},
 	}),
 	// 定义获取存储数据时调用的方法
-	getters:{
-		getToken():string {
+	getters: {
+		getToken(): string {
 			return this.token;
 		},
-		getUsername():string {
-			return this.username;
-		},
-		getAvatar():string {
+		getAvatar(): string {
 			return this.avatar;
 		},
-		getPermissions():string[]{
+		getUserName(): string {
+			return this.username;
+		},
+		getPermissions(): string[] {
 			return this.permissions;
 		},
-		getUserInfo():Object{
-			// 判断this.info是否是空对象
-			// if (this.info?.id){
-			//
-			// }else{
-			//
-			// }
+		async getUserInfo(): Object {
+			// 判断 this.info 是否是空对象
+			if(!this.info?.id) {
+				this.getUser();
+			}
 			return this.info;
 		}
 	},
 	// 定义修改存储数据时调用的方法
 	actions: {
-		setToken(token:string){
-			// 将用户登录获取到的token存储到本地
+		setToken(token: string) {
 			localStorage.setItem('token',token);
-			this.token = token
+			this.token = token;
 		},
-		setUsername(username:string){
-			this.username = username
+		setAvatar(avatar: string) {
+			this.avatar = avatar;
 		},
-		setAvatar(avatar:string){
-			this.avatar = avatar
+		setUserInfo(info:Object) {
+			this.info = info;
 		},
-		setPermissions(permissions:string[]){
-			this.permissions = permissions
+		setUserName(username:string) {
+			this.username = username;
 		},
-		setUserInfo(info: Object){
-			this.info = info
+		setPermissions(permissions:string[]) {
+			this.permissions = permissions;
 		},
 		// 定义登录异步请求的方法
-		async login(userInfo: Object){
+		async login(userInfo:Object) {
 			try {
 				const response = await login(userInfo);
 				if (response.access_token){
-					this.setToken(response.access_token)
-
-					await this.getUser()
+					this.setToken(response.access_token);
+					this.getUser();
 				}
 			} catch (error) {
-				console.log(error)
+				console.log(error);
 			}
 		},
 		// 定义获取用户信息的异步请求
 		async getUser(){
-			try{
-				const response = await user()
-				console.log(response)
-				this.setUserInfo(response)
-				this.setAvatar(response.avatar)
-				this.setUsername(response.name)
-			}catch (error) {
-				console.log(error)
+			console.log('getUser')
+			try {
+				const response = await user();
+				this.setUserInfo(response);
+				this.setAvatar(response.avatar);
+				this.setUserName(response.name);
+				return response;
+			} catch (error) {
+				console.log(error);
 			}
 		}
 	}

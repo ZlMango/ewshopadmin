@@ -10,6 +10,8 @@ declare module '@vue/runtime-core' {
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']
+    NCard: typeof import('naive-ui')['NCard']
+    NCol: typeof import('naive-ui')['NCol']
     NDataTable: typeof import('naive-ui')['NDataTable']
     NDiropdown: typeof import('naive-ui')['NDiropdown']
     NDropdown: typeof import('naive-ui')['NDropdown']
@@ -24,7 +26,9 @@ declare module '@vue/runtime-core' {
     NLayoutSider: typeof import('naive-ui')['NLayoutSider']
     NMenu: typeof import('naive-ui')['NMenu']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
+    NModal: typeof import('naive-ui')['NModal']
     NPagination: typeof import('naive-ui')['NPagination']
+    NRow: typeof import('naive-ui')['NRow']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

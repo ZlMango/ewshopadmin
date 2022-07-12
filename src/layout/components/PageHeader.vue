@@ -3,9 +3,13 @@
 				<!--	下拉菜单		-->
 				<n-dropdown :options="options" @select="select">
 						<div class="flex items-center">
-								<n-avatar round size="small" src="https://api.shop.eduwork.cn/image/avatar.png"/>
+								<n-avatar
+										round
+										size="small"
+										:src="userStore.getAvatar"
+								/>
 								<span class="pl-2">
-										超级管理员
+										{{userStore.getUserName}}
 								</span>
 						</div>
 				</n-dropdown>
@@ -16,11 +20,11 @@ import {LogOutOutline} from '@vicons/ionicons5'
 import {ref} from 'vue'
 import {renderIcon} from '@/utils';
 import {logout} from '@/api/auth'
-import {LogOutOutline as logoutIcon} from '@vicons/ionicons5'
 // 引入 pinia 中的存储用户信息的对象
 import {useUserStore} from "@/store/user"
 // 创建用户数据存储对象
 const userStore = useUserStore()
+// userStore.getUserInfo
 const options = ref([
 		{
 				label:'退出登录',

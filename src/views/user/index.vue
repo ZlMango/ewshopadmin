@@ -24,15 +24,32 @@
 												<n-input v-model:value="formSearch.age" placeholder="输入邮箱" />
 										</n-form-item>
 										<n-form-item class="ml-auto">
-												<n-button attr-type="button" @click="">
+												<n-button type="info" class="mr-10" attr-type="button" @click="searchSubmit">
+														<n-icon>
+																<SearchOutline></SearchOutline>
+														</n-icon>
 														搜索
+												</n-button>
+												<n-button attr-type="button" @click="resetReload">
+														<n-icon>
+																<RefreshOutline></RefreshOutline>
+														</n-icon>
+														重置
 												</n-button>
 										</n-form-item>
 								</n-form>
 						</div>
 						<div class="mt-4 bg-white">
-								<div class="text-xl pl-4 py-4">
-										用户列表
+								<div class="text-xl px-6 py-4 flex">
+										<span>用户列表</span>
+										<span class="ml-auto ">
+												<NButton type="info" @click="showModal = true">
+														<n-icon>
+																<AddSharp></AddSharp>
+														</n-icon>
+														<span>新建</span>
+												</NButton>
+										</span>
 								</div>
 								<div>
 										<n-data-table
@@ -41,77 +58,200 @@
 												:pagination="pagination"
 												:bordered="false"
 										/>
-								</div>
-								<div class="p-4 flex justify-center pr-10">
-										<n-pagination v-model:page="page" :page-count="100" />
+										<div class="p-4 flex justify-center pr-10">
+												<n-pagination v-model:page="page" @update:page="updatePage" :page-count="totalPages" />
+										</div>
 								</div>
 						</div>
+						<AddUser :showModal="showModal" @changeShowModal="changeShowModal"></AddUser>
 				</div>
 		</div>
 </template>
-
 <script setup lang="ts">
-import { h,ref} from 'vue'
-import { NButton, useMessage } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+// onMounted 钩子可以用来在组件完成初始渲染并创建 DOM 节点后运行代码。
+// h() 创建虚拟 DOM 节点 (vnode)。
+import { h,ref,onMounted} from 'vue'
+// 引入封装的用户列表的接口
+import {users} from '@/api/users'
+// 引入按钮 消息提示 头像组件 开关组件 图标组件
+import { NButton, useMessage,NAvatar,NSwitch,NIcon} from 'naive-ui'
+import {SearchOutline,RefreshOutline,AddSharp} from '@vicons/ionicons5'
+// 引入组件
+import AddUser from '@/views/user/components/AddUser.vue'
+// 定义总页数
+const totalPages = ref(0)
+// 定义当前页数
+const page = ref(1)
+// Naive UI 库中的消息提示
+const message = useMessage()
+// 存储用户的列表信息    
+const data = ref([])
+const columns = [
+		{
+				title: '头像',
+				key: 'avatar_url',
+				// 自定义单元格渲染，优先级低于列的 render   row 为获取到的当前行的数据
+				render(row){
+						// h() 创建虚拟 DOM 节点 (vnode)。 使用组件设置头像是否圆形，头像的地址，头像的尺寸
+						return h(NAvatar,{round:true,src:row.avatar_url,size:'medium'})
+				}
+		},
+		{
+				title: '姓名',
+				key: 'name'
+		},
+		{
+				title: '邮箱',
+				key: 'email'
+		},
+		{
+				title: '是否禁用',
+				key: 'is_locked',
+				render(row){
+						return h(
+								NSwitch,
+								{
+										size:'small',
+										color:'#1890ff',
+										activeColor:'#52c41a',
+										inactiveColor:'#d9d9d9',
+										activeValue:1,
+										inactiveValue:0,
+										// 绑定返回的用户列表数据参数中的是否锁定
+										value:row.is_locked == 1 ? false : true
+								}
+						)
+				}
+		},
+		{
+				title: '创建时间',
+				key: 'created_at',
+		},
+		{
+				title: '操作',
+				key: 'created_at',
+				render(row){
+						return h(
+								NButton,
+								{
+								size: 'small',
+								color: '#1890ff',
+								strong:true,
+								onClick:() => {
+										message.info('正在编辑' + row.name);
+								}
+						},'编辑')
+				}
+		}
+]
+const pagination = ref(false as const)
+// 定义存储用户列表数据中的名称和邮箱
 const formSearch = ref({
 		name:'',
 		email:''
 })
-const page = ref(1)
-const message = useMessage()
-type Song = {
-		no: number
-		title: string
-		length: string
+// 定义模态框组件的状态
+const showModal = ref(false)
+// 定义事件调用的方法
+const changeShowModal =　status => {
+		showModal.value = status
 }
-const createColumns = ({
-		                       play
-                       }: {
-		play: (row:Song) => void
-}): DataTableColumns<Song> => {
-		return [
-				{
-						title: 'No',
-						key: 'no'
-				},
-				{
-						title: 'Title',
-						key: 'title'
-				},
-				{
-						title: 'Length',
-						key: 'length'
-				},
-				{
-						title: 'Action',
-						key: 'actions',
-						render (row) {
-								return h(
-										NButton,
-										{
-												strong: true,
-												tertiary: true,
-												size: 'small',
-												onClick: () => play(row)
-										},
-										{ default: () => 'Play' }
-								)
-						}
-				}
-		]
-}
-const data: Song[] = [
-		{ no: 3, title: 'Wonderwall', length: '4:18' },
-		{ no: 4, title: "Don't Look Back in Anger", length: '4:48' },
-		{ no: 12, title: 'Champagne Supernova', length: '7:27' }
-]
-const columns = createColumns({
-		play (row: Song) {
-				message.info(`Play ${row.title}`)
-		}
+// 通过 onMounted 钩子调用封装后的用户列表接口
+onMounted(() => {
+		// // 调用接口 获取用户列表数据
+		// users({}).then(res =>{
+		// 		console.log(res)
+		// 		// 将获取到的用户列表信息取出
+		// 		data.value = res.data
+		// 		// 将获取到的用户列表总页数信息取出
+		// 		totalPages.value = res.meta.pagination.total_pages
+		// 		// 将获取到的用户列表当前页信息取出
+		// 		page.value = res.meta.pagination.current_page
+		// })
+		getUserList({})
 })
-const pagination = ref(false as const)
+// Naive UI库中分页组件通过事件触发的方法
+const updatePage = (pageNum) => {
+		// // 参数为当前页数
+		// console.log(pageNum)
+		// // 重新发送获取用户列表数据请求
+		// users({
+		// 		// 用户名称
+		// 		name:formSearch.value.name,
+		// 		// 用户邮箱
+		// 		email:formSearch.value.email,
+		// 		// 将当前页数绑定请求参数中的分页-当前页
+		// 		current:pageNum
+		// }).then(res => {
+		// 		// 重新获取用户列表中的数据
+		// 		console.log(res)
+		// 		// 将获取到的用户列表信息取出
+		// 		data.value = res.data
+		// 		// 将获取到的用户列表总页数信息取出
+		// 		totalPages.value = res.meta.pagination.total_pages
+		// 		// 将重新获取到的用户列表当前页信息取出
+		// 		page.value = res.meta.pagination.current_page
+		// })
+		getUserList({
+				// 用户名称
+				name:formSearch.value.name,
+				// 用户邮箱
+				email:formSearch.value.email,
+				// 将当前页数绑定请求参数中的分页-当前页
+				current:pageNum
+		})
+}
+// 定义用户搜索点击事件触发的方法
+const searchSubmit = () => {
+		// 调用接口重新获取用户列表数据
+		// users({
+		// 		// 定义调用接口获取用户列表数据的参数
+		// 		// 用户名称
+		// 		name:formSearch.value.name,
+		// 		// 用户邮箱
+		// 		email:formSearch.value.email,
+		// 		// 点击搜索之后获取第一页的数据
+		// 		current:1
+		// }).then(res => {
+		// 		// 将获取到的用户列表信息重新绑定赋值
+		// 		data.value = res.data
+		// 		// 将获取到的用户列表总页数信息重新绑定赋值
+		// 		totalPages.value = res.meta.pagination.total_pages
+		// 		// 将重新获取到的用户列表当前页信息重新绑定赋值
+		// 		page.value = res.meta.pagination.current_page
+		// })
+		getUserList({
+				// 用户名称
+				name:formSearch.value.name,
+				// 用户邮箱
+				email:formSearch.value.email,
+				// 点击搜索之后获取第一页的数据
+				current:1
+		})
+}
+
+// 定义用户重置点击事件触发的方法
+const resetReload = () => {
+		getUserList({})
+		// 点击重置之后清空搜索栏内的数据
+		formSearch.value = {
+				name: '',
+				email: ''
+		}
+}
+
+// 优化接口
+const getUserList = (params) => {
+		users(params).then(res => {
+				// 将获取到的用户列表信息重新绑定赋值
+				data.value = res.data
+				// 将获取到的用户列表总页数信息重新绑定赋值
+				totalPages.value = res.meta.pagination.total_pages
+				// 将重新获取到的用户列表当前页信息重新绑定赋值
+				page.value = res.meta.pagination.current_page
+		})
+}
+
 </script>
 
 <style scoped>
