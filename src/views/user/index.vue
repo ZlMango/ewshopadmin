@@ -40,7 +40,7 @@
 								</n-form>
 						</div>
 						<div class="mt-4 bg-white">
-								<div class="text-xl px-6 py-4 flex">
+								<div class="text-xl px-6 py-4 flex" >
 										<span>用户列表</span>
 										<span class="ml-auto ">
 												<NButton type="info" @click="showModal = true">
@@ -57,6 +57,7 @@
 												:data="data"
 												:pagination="pagination"
 												:bordered="false"
+												:key="locked"
 										/>
 										<div class="p-4 flex justify-center pr-10">
 												<n-pagination v-model:page="page" @update:page="updatePage" :page-count="totalPages" />
@@ -84,8 +85,11 @@ const totalPages = ref(0)
 const page = ref(1)
 // Naive UI 库中的消息提示
 const message = useMessage()
-// 存储用户的列表信息    
+
+const locked = ref(0)
+// 存储用户的列表信息
 const data = ref([])
+
 const columns = [
 		{
 				title: '头像',
@@ -118,7 +122,14 @@ const columns = [
 										activeValue:1,
 										inactiveValue:0,
 										// 绑定返回的用户列表数据参数中的是否锁定
-										value:row.is_locked == 1 ? false : true
+										value:row.is_locked == 1 ? false : true,
+										onClick:() => {
+												if (row.is_locked == 1){
+														row.is_locked = 0
+												}else{
+														row.is_locked = 1
+												}
+										}
 								}
 						)
 				}
@@ -144,6 +155,7 @@ const columns = [
 				}
 		}
 ]
+
 const pagination = ref(false as const)
 // 定义存储用户列表数据中的名称和邮箱
 const formSearch = ref({
@@ -239,7 +251,6 @@ const resetReload = () => {
 				email: ''
 		}
 }
-
 // 优化接口
 const getUserList = (params) => {
 		users(params).then(res => {
