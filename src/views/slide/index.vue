@@ -2,9 +2,9 @@
 		<div>
 				<div class="h-24 w-full bg-white p-3 mb-6">
 						<div>
-								<span class="text-slate-400 pr-2">首页</span> / <span class="pl-2">用户列表</span>
+								<span class="text-slate-400 pr-2">首页</span> / <span class="pl-2">轮播图列表</span>
 								<div class="pt-3 text-xl text-black font-medium">
-										用户管理
+										轮播图管理
 								</div>
 						</div>
 				</div>
@@ -41,7 +41,7 @@
 						</div>
 						<div class="mt-4 bg-white">
 								<div class="text-xl px-6 py-4 flex" >
-										<span>用户列表</span>
+										<span>轮播图列表</span>
 										<span class="ml-auto ">
 												<NButton type="info" @click="showModal = true">
 														<n-icon>
@@ -63,8 +63,7 @@
 										</div>
 								</div>
 						</div>
-						<AddUser v-if="showModal" :showModal="showModal" @changeShowModal="changeShowModal" @reloadTable="reload"></AddUser>
-						<EditUser v-if="showEditModal" :user_id="user_id" :showEditModal="showEditModal" @changeEditModal="changeEditModal" @reloadTable="reload"></EditUser>
+						<AddSlide v-if="showModal" :showModal="showModal" @changeShowModal="changeShowModal" @reloadTable="reload"></AddSlide>
 				</div>
 		</div>
 </template>
@@ -72,26 +71,24 @@
 // onMounted 钩子可以用来在组件完成初始渲染并创建 DOM 节点后运行代码。
 // h() 创建虚拟 DOM 节点 (vnode)。
 import { h,ref,onMounted} from 'vue'
-// 引入封装的用户列表的接口
+// 引入封装的轮播图列表的接口
 import {users} from '@/api/users'
 // 引入按钮 消息提示 头像组件 开关组件 图标组件
 import { NButton, useMessage,NAvatar,NSwitch,NIcon,useLoadingBar} from 'naive-ui'
 import {SearchOutline,RefreshOutline,AddSharp} from '@vicons/ionicons5'
 // 定义加载条组件
 const loadingBar = useLoadingBar()
-// 引入添加用户组件
-import AddUser from '@/views/user/components/AddUser.vue'
-// 引入编辑用户组件
-import EditUser from '@/views/user/components/EditUser.vue'
+// 引入添加轮播图组件
+import AddSlide from './components/AddSlide.vue'
 // 定义总页数
 const totalPages = ref(0)
 // 定义当前页数
 const page = ref(1)
 // Naive UI 库中的消息提示
 const message = useMessage()
-// 存储用户的列表信息
+// 存储轮播图的列表信息
 const data = ref([])
-// 用户的id
+// 轮播图的id
 const user_id = ref('')
 
 const columns = [
@@ -125,7 +122,7 @@ const columns = [
 										inactiveColor:'#d9d9d9',
 										activeValue:1,
 										inactiveValue:0,
-										// 绑定返回的用户列表数据参数中的是否锁定
+										// 绑定返回的轮播图列表数据参数中的是否锁定
 										value:row.is_locked == 1 ? false : true,
 										onClick:() => {
 												if (row.is_locked == 1){
@@ -153,7 +150,7 @@ const columns = [
 								color: '#1890ff',
 								strong:true,
 								onClick:() => {
-										// 将用户列表数据的id赋值
+										// 将轮播图列表数据的id赋值
 										user_id.value = row.id;
 										// 点击编辑之后显示组件
 										showEditModal.value = true
@@ -164,7 +161,7 @@ const columns = [
 ]
 
 const pagination = ref(false as const)
-// 定义存储用户列表数据中的名称和邮箱
+// 定义存储轮播图列表数据中的名称和邮箱
 const formSearch = ref({
 		name:'',
 		email:''
@@ -180,16 +177,16 @@ const changeShowModal =　status => {
 const changeEditModal = status => {
 		showEditModal.value = status
 }
-// 通过 onMounted 钩子调用封装后的用户列表接口
+// 通过 onMounted 钩子调用封装后的轮播图列表接口
 onMounted(() => {
-		// // 调用接口 获取用户列表数据
+		// // 调用接口 获取轮播图列表数据
 		// users({}).then(res =>{
 		// 		console.log(res)
-		// 		// 将获取到的用户列表信息取出
+		// 		// 将获取到的轮播图列表信息取出
 		// 		data.value = res.data
-		// 		// 将获取到的用户列表总页数信息取出
+		// 		// 将获取到的轮播图列表总页数信息取出
 		// 		totalPages.value = res.meta.pagination.total_pages
-		// 		// 将获取到的用户列表当前页信息取出
+		// 		// 将获取到的轮播图列表当前页信息取出
 		// 		page.value = res.meta.pagination.current_page
 		// })
 		getUserList({})
@@ -198,62 +195,62 @@ onMounted(() => {
 const updatePage = (pageNum) => {
 		// // 参数为当前页数
 		// console.log(pageNum)
-		// // 重新发送获取用户列表数据请求
+		// // 重新发送获取轮播图列表数据请求
 		// users({
-		// 		// 用户名称
+		// 		// 轮播图名称
 		// 		name:formSearch.value.name,
-		// 		// 用户邮箱
+		// 		// 轮播图邮箱
 		// 		email:formSearch.value.email,
 		// 		// 将当前页数绑定请求参数中的分页-当前页
 		// 		current:pageNum
 		// }).then(res => {
-		// 		// 重新获取用户列表中的数据
+		// 		// 重新获取轮播图列表中的数据
 		// 		console.log(res)
-		// 		// 将获取到的用户列表信息取出
+		// 		// 将获取到的轮播图列表信息取出
 		// 		data.value = res.data
-		// 		// 将获取到的用户列表总页数信息取出
+		// 		// 将获取到的轮播图列表总页数信息取出
 		// 		totalPages.value = res.meta.pagination.total_pages
-		// 		// 将重新获取到的用户列表当前页信息取出
+		// 		// 将重新获取到的轮播图列表当前页信息取出
 		// 		page.value = res.meta.pagination.current_page
 		// })
 		getUserList({
-				// 用户名称
+				// 轮播图名称
 				name:formSearch.value.name,
-				// 用户邮箱
+				// 轮播图邮箱
 				email:formSearch.value.email,
 				// 将当前页数绑定请求参数中的分页-当前页
 				current:pageNum
 		})
 }
-// 定义用户搜索点击事件触发的方法
+// 定义轮播图搜索点击事件触发的方法
 const searchSubmit = () => {
-		// 调用接口重新获取用户列表数据
+		// 调用接口重新获取轮播图列表数据
 		// users({
-		// 		// 定义调用接口获取用户列表数据的参数
-		// 		// 用户名称
+		// 		// 定义调用接口获取轮播图列表数据的参数
+		// 		// 轮播图名称
 		// 		name:formSearch.value.name,
-		// 		// 用户邮箱
+		// 		// 轮播图邮箱
 		// 		email:formSearch.value.email,
 		// 		// 点击搜索之后获取第一页的数据
 		// 		current:1
 		// }).then(res => {
-		// 		// 将获取到的用户列表信息重新绑定赋值
+		// 		// 将获取到的轮播图列表信息重新绑定赋值
 		// 		data.value = res.data
-		// 		// 将获取到的用户列表总页数信息重新绑定赋值
+		// 		// 将获取到的轮播图列表总页数信息重新绑定赋值
 		// 		totalPages.value = res.meta.pagination.total_pages
-		// 		// 将重新获取到的用户列表当前页信息重新绑定赋值
+		// 		// 将重新获取到的轮播图列表当前页信息重新绑定赋值
 		// 		page.value = res.meta.pagination.current_page
 		// })
 		getUserList({
-				// 用户名称
+				// 轮播图名称
 				name:formSearch.value.name,
-				// 用户邮箱
+				// 轮播图邮箱
 				email:formSearch.value.email,
 				// 点击搜索之后获取第一页的数据
 				current:1
 		})
 }
-// 定义用户重置点击事件触发的方法
+// 定义轮播图重置点击事件触发的方法
 const resetReload = () => {
 		getUserList({})
 		// 点击重置之后清空搜索栏内的数据
@@ -267,11 +264,11 @@ const getUserList = (params) => {
 		// 使用加载条
 		loadingBar.start()
 		users(params).then(res => {
-				// 将获取到的用户列表信息重新绑定赋值
+				// 将获取到的轮播图列表信息重新绑定赋值
 				data.value = res.data
-				// 将获取到的用户列表总页数信息重新绑定赋值
+				// 将获取到的轮播图列表总页数信息重新绑定赋值
 				totalPages.value = res.meta.pagination.total_pages
-				// 将重新获取到的用户列表当前页信息重新绑定赋值
+				// 将重新获取到的轮播图列表当前页信息重新绑定赋值
 				page.value = res.meta.pagination.current_page
 				// 加载条结束
 				loadingBar.finish()
@@ -280,7 +277,7 @@ const getUserList = (params) => {
 				loadingBar.error()
 		})
 }
-// 定义添加用户之后自动刷新页面数据的方法
+// 定义添加轮播图之后自动刷新页面数据的方法
 const reload = ()=>{
 		getUserList({
 				current:page.value,

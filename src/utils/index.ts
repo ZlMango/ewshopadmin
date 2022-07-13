@@ -4,7 +4,7 @@ import {Component} from "@vue/runtime-core";
 import {BookOutline as BookIcon} from "@vicons/ionicons5";
 import router from "@/router";
 
-// 定义图标的方法
+// 定义使用图标的方法
 export const renderIcon =  (icon:Component) : Component =>{
 	return () => h(NIcon, null, { default: () => h(icon) })
 }

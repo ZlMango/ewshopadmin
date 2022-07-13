@@ -18,3 +18,22 @@ export function addUser(data:any){
 	})
 }
 
+
+// 封装用户详情接口的请求
+export function getUserInfo(userid:number){
+	return request({
+		url: `/api/admin/users/${userid}`,
+	})
+}
+
+
+// 封装更新用户信息接口的请求
+export function updateUser(userid:number,data:any){
+	return request({
+		url: `/api/admin/users/${userid}`,
+		method: 'PUT',
+		data
+	})
+}
+
+

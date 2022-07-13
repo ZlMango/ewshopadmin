@@ -58,7 +58,9 @@ request.interceptors.response.use(response => {
 			break;
 		// （验证错误） 请求参数未通过验证
 		case 422:
-			window.$message.error('请求参数错误')
+			console.log(response)
+			let msg = response.data.errors[Object.keys(response.data.errors)[0]][0]
+			window.$message.error(msg)
 			break;
 	}
 	//返回错误的响应信息
