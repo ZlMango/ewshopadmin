@@ -13,7 +13,7 @@ const routeName = 'dashboard'
 // 引入定义使用图标的方法
 import {renderIcon} from '@/utils'
 // 引入 Naive UI 库中的图标
-import {Browsers} from '@vicons/ionicons5'
+import {HomeOutline} from '@vicons/ionicons5'
 /*
 	@param name  路由名称 必须设置 且不能重名
 	@param meta  路由元数据(路由附带扩展信息)
@@ -39,9 +39,9 @@ const routes:Array<RouteRecordRaw> = [
 		// 定义路由的元数据
 		meta:{
 			// 定义路由的标题
-			title: 'Dashboard',
+			title: '首页统计',
 			// 定义路由的小图标
-			icon:renderIcon(Browsers),
+			icon:renderIcon(HomeOutline),
 			// 路由排序
 			sort:0
 		},
@@ -52,8 +52,8 @@ const routes:Array<RouteRecordRaw> = [
 				path: 'console',
 				name:`${routeName}_console`,
 				meta:{
-					title:"主控台",
-					icon:renderIcon(Browsers)
+					title:"首页统计",
+					icon:renderIcon(HomeOutline)
 				},
 				// 懒加载引入注册组件
 				component: () => import('@/views/dashboard/index.vue')

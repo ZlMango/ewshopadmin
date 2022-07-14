@@ -38,11 +38,11 @@ const routes:Array<RouteRecordRaw> = [
 		// 定义路由的元数据
 		meta:{
 			// 定义路由的标题
-			title: '财务管理',
+			title: '订单管理',
 			// 定义路由的小图标
 			icon:renderIcon(WalletOutline),
 			// 路由排序
-			sort:2
+			sort:4
 		},
 		// 定义子路由
 		// children 中的所有的路由都会继承上级路由

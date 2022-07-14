@@ -8,10 +8,10 @@ import Layout from '@/layout/index.vue';
 import {RouteRecordRaw} from 'vue-router'
 
 // 将路由的名称单独定义 因为需多次调用
-const routeName = 'users'
+const routeName = 'sort'
 
 // 引入图标
-import {PeopleCircle} from '@vicons/ionicons5'
+import {LibraryOutline} from '@vicons/ionicons5'
 // 引入使用图标的方法
 import {renderIcon} from '@/utils'
 /*
@@ -29,22 +29,22 @@ import {renderIcon} from '@/utils'
 const routes:Array<RouteRecordRaw> = [
 	{
 		// 定义路由
-		path:'/users',
+		path:'/sort',
 		// 定义路由的名称
 		name: routeName,
 		// 注册组件
 		component:Layout,
 		// 拼接子路由
-		redirect:'/users/list',
+		redirect:'/sort/list',
 		// 定义路由的元数据
 		meta:{
 			// 定义路由的标题
-			title: '用户管理',
+			title: '分类管理',
 			// 定义路由的小图标
-			icon:renderIcon(PeopleCircle),
+			icon:renderIcon(LibraryOutline),
 			// 路由排序
-			sort:2,
-			permissions: ['users','admin']
+			sort:1,
+			permissions: ['sort','admin']
 		},
 		// 定义子路由
 		// children 中的所有的路由都会继承上级路由
@@ -53,11 +53,11 @@ const routes:Array<RouteRecordRaw> = [
 				path: 'list',
 				name:`${routeName}_list`,
 				meta:{
-					title:"用户列表",
+					title:"分类列表",
 					icon:'console'
 				},
 				// 懒加载引入注册组件
-				component: () => import('@/views/user/index.vue')
+				component: () => import('@/views/sort/index.vue')
 			}
 		]
 	}

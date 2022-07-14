@@ -43,7 +43,7 @@ const routes:Array<RouteRecordRaw> = [
 			// 定义路由的小图标
 			icon:renderIcon(BagHandleOutline),
 			// 路由排序
-			sort:4,
+			sort:3,
 			permissions: ['goods']
 		},
 		// 定义子路由

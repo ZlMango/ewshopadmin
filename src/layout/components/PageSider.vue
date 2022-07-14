@@ -1,7 +1,8 @@
 <template>
 		<div class="pt-4">
-				<div class="m-0">
-						<img class="m-auto" src="~@/assets/images/logo.png"  alt="logo"/>
+				<div class="m-0 flex ">
+						<img class="ml-4 mr-4" src="~@/assets/images/logo.png"  alt="logo"/>
+						<div class="text-2xl font-black text-white mt-1">融职商城</div>
 				</div>
 				<n-menu :options="menuOptions" :value="defaultKey" inverted @update:value="handleUpdateValue" />
 		</div>
