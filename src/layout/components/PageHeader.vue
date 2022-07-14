@@ -24,7 +24,7 @@ import {logout} from '@/api/auth'
 import {useUserStore} from "@/store/user"
 // 创建用户数据存储对象
 const userStore = useUserStore()
-// userStore.getUserInfo
+userStore.getUserInfo
 const options = ref([
 		{
 				label:'退出登录',

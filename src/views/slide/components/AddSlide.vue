@@ -36,11 +36,7 @@
 										</n-radio-group>
 								</n-form-item>
 								<n-form-item label="图片上传" path="img">
-										<n-upload
-											:custom-request="customRequest"
-										>
-												<n-button>上传文件</n-button>
-										</n-upload>
+										<Upload @backKey="backKey"></Upload>
 								</n-form-item>
 								<n-row :gutter="[0, 24]">
 										<n-col :span="24">
@@ -59,12 +55,10 @@
 				</n-card>
 		</n-modal>
 </template>
-<script setup lang="ts">
-import {ref,h} from 'vue'
-// 引入接口
-import {uploadToken} from "@/api/base"
-// 引入axios依赖包
-import axios from 'axios'
+<script setup>
+import {ref,} from 'vue'
+// 引入上传图片的组件
+import Upload from '@/components/Upload/index.vue'
 // 引入添加轮播接口的请求
 import {addSlides} from '@/api/slide'
 // 接收父组件传输的数据  props 传进来的参数是不允许被修改的
@@ -133,35 +127,9 @@ const slideSubmit = (e) => {
 		})
 }
 
-
-// 上传图片的方法
-const customRequest = ({file,action,header,onFinish,onError}) => {
-		// console.log(file,action,header,onFinish,onError)
-		// 获取阿里云服务器token接口的请求
-		uploadToken().then(res => {
-				// 图片上传的逻辑
-				console.log(res)
-				// 组装上传的参数
-				const formData = new FormData();
-				// 随机生成图片名称  带有时间戳  根据file.name来获取文件的后缀名
-				const fileName = `${Date.now()}${Math.floor(Math.random()*1000)}.${file.name.split('.').pop()}`
-				formData.append('key',fileName);
-				formData.append('OSSAccessKeyId',res.accessid);
-				formData.append('policy',res.policy);
-				formData.append('Signature',res.signature);
-				formData.append('file',file.file);
-				// 发送请求
-				console.log(formData)
-				axios.post(res.host,formData,{
-						headers: {'Content-Type':'multipart/form-data'}
-				}).then(res => {
-						console.log(res,'res')
-						model.value.img = fileName
-						onFinish(fileName)
-				}).catch(err => {
-						// onError(err)
-				})
-		})
+const backKey = (key) => {
+		// 获取随机生成的文件名
+		model.value.img = key
 }
 
 </script>

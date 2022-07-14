@@ -48,6 +48,7 @@ request.interceptors.response.use(response => {
 			break;
 		// （未找到） 服务器找不到请求的资源
 		case 404:
+			console.log(response)
 			window.$message.error('请求页面不存在')
 			break;
 		//（服务器内部错误） 服务器遇到错误，无法完成请求。  通常是api出现了错误  后台的问题

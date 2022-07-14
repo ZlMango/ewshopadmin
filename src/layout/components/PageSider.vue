@@ -3,19 +3,11 @@
 				<div class="m-0">
 						<img class="m-auto" src="~@/assets/images/logo.png"  alt="logo"/>
 				</div>
-				<n-menu :options="menuOptions" inverted @update:value="handleUpdateValue" />
-				<!--    <n-menu-->
-				<!--        :inverted="true"-->
-				<!--        :collapsed-width="64"-->
-				<!--        :collapsed-icon-size="22"-->
-				<!--        :options="menuOptions"-->
-				<!--        @update:value="selectMenu"-->
-				<!--        :value="routeKey"-->
-				<!--    />-->
+				<n-menu :options="menuOptions" :value="defaultKey" inverted @update:value="handleUpdateValue" />
 		</div>
 </template>
-
-<script lang="ts" setup>
+<script setup>
+import {ref,onMounted} from 'vue'
 // 引入合并路由
 import {routeModuleList} from '@/router'
 // 引入路由
@@ -27,16 +19,37 @@ import {generatorMenu, renderIcon} from '@/utils'
 	用自定义的方法将自定义的路由拆分重组
 	返回的结构为原有的菜单结构
 */
-// 创建路由对象
+// 创建路由器对象
 const router = useRouter()
+
+// 创建菜单value属性绑定的当前路由
+
+const defaultKey = ref('')
+
 const menuOptions = generatorMenu(routeModuleList)
 // 菜单中点击菜单项触发的事件
 const handleUpdateValue = (key,item) => {
-		// console.log(key)
-		// console.log(item)
+		// 当前路由名称
+		console.log(key)
+		// 当前路由对象
+		console.log(item)
+		// 用户点击菜单时修改路由名称
+		defaultKey.value = key
 		// 添加路由
 		router.push({name: key})
 }
+
+onMounted(() => {
+		// 定义当前路由对象
+		const route = useRoute()
+		console.log(route)
+		// 获取当前路由的名称
+		const routeKey = route.name
+		// 页面加载完数据获取当前路由的名称
+		defaultKey.value = routeKey
+		console.log(routeKey)
+})
+
 </script>
 
 <style scoped>

@@ -14,8 +14,13 @@ export const renderIcon =  (icon:Component) : Component =>{
 export function generatorMenu(routerMap: Array<any>) {
 	// 将侧边栏排序
 	routerMap.sort((a, b) => a.meta.sort - b.meta.sort);
+	// 定义用户权限
+	// let permissions = ['users','goods','dashboard','slide']
 	// 处理数据结构 将接收到的参数循环遍历
 	let result = routerMap.map((item) => {
+		// if (!permissions.includes(item.name)){
+		// 	return  null
+		// }
 		// 定义新的结构
 		let menu = {
 			label: item?.meta?.title,
@@ -25,12 +30,15 @@ export function generatorMenu(routerMap: Array<any>) {
 		// 使用递归的方式处理侧边栏中的子路由
 		if (item.children && item.children.length > 1){
 			menu.children = generatorMenu(item.children)
+		}else if (item.children && item.children.length == 1){
+			menu.key = item?.children[0].name
 		}
 		// console.log(menu)
 		return menu
 	})
+	// 去除 result null
+	// return result.filter(item => item != null)
 	return result
-
 /**
  * 判断根路由 Router
  * */

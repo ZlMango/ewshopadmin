@@ -2,9 +2,9 @@
 		<div>
 				<div class="h-24 w-full bg-white p-3 mb-6">
 						<div>
-								<span class="text-slate-400 pr-2">首页</span> / <span class="pl-2">轮播图列表</span>
+								<span class="text-slate-400 pr-2">首页</span> / <span class="pl-2">商品列表</span>
 								<div class="pt-3 text-xl text-black font-medium">
-										轮播图管理
+										商品管理
 								</div>
 						</div>
 				</div>
@@ -17,18 +17,18 @@
 										:model="formSearch"
 										label-placement="left"
 								>
-										<n-form-item label="图片名称" path="title">
-												<n-input v-model:value="formSearch.title" placeholder="输入标题" />
+										<n-form-item label="商品名" path="name">
+												<n-input v-model:value="formSearch.name" placeholder="输入商品名称" />
 										</n-form-item>
-										<n-form-item label="链接地址" path="url">
-												<n-input v-model:value="formSearch.url" placeholder="输入跳转链接" />
+										<n-form-item label="是否上架" path="email">
+												<n-input v-model:value="formSearch.age" placeholder="已上架" />
 										</n-form-item>
 										<n-form-item class="ml-auto">
 												<n-button type="info" class="mr-10" attr-type="button" @click="searchSubmit">
 														<n-icon>
 																<SearchOutline></SearchOutline>
 														</n-icon>
-														搜索
+														查询
 												</n-button>
 												<n-button attr-type="button" @click="resetReload">
 														<n-icon>
@@ -41,7 +41,7 @@
 						</div>
 						<div class="mt-4 bg-white">
 								<div class="text-xl px-6 py-4 flex" >
-										<span>轮播图列表</span>
+										<span>商品列表</span>
 										<span class="ml-auto ">
 												<NButton type="info" @click="showModal = true">
 														<n-icon>
@@ -63,7 +63,8 @@
 										</div>
 								</div>
 						</div>
-						<AddSlide v-if="showModal" :showModal="showModal" @changeShowModal="changeShowModal" @reloadTable="reload"></AddSlide>
+						<AddGoods v-if="showModal" :showModal="showModal" @changeShowModal="changeShowModal" @reloadTable="reload"></AddGoods>
+						<EditGoods v-if="showEditModal" :user_id="user_id" :showEditModal="showEditModal" @changeEditModal="changeEditModal" @reloadTable="reload"></EditGoods>
 				</div>
 		</div>
 </template>
@@ -71,45 +72,45 @@
 // onMounted 钩子可以用来在组件完成初始渲染并创建 DOM 节点后运行代码。
 // h() 创建虚拟 DOM 节点 (vnode)。
 import { h,ref,onMounted} from 'vue'
-// 引入封装的轮播图列表的接口
+// 引入封装的用户列表的接口
 import {users} from '@/api/users'
-// 引入获取轮播列表接口的请求
-import {slides,getSlides} from '@/api/slide'
-// 引入Naive UI库中的组件
-import { NButton, useMessage,NAvatar,NSwitch,NIcon,useLoadingBar,NImage} from 'naive-ui'
+// 引入组件
+import { NButton, useMessage,NAvatar,NSwitch,NIcon,useLoadingBar} from 'naive-ui'
 import {SearchOutline,RefreshOutline,AddSharp} from '@vicons/ionicons5'
 // 定义加载条组件
 const loadingBar = useLoadingBar()
-// 引入添加轮播图组件
-import AddSlide from './components/AddSlide.vue'
+// 引入添加用户组件
+import AddGoods from '@/views/goods/components/AddGoods.vue'
+// 引入编辑用户组件
+import EditGoods from '@/views/goods/components/EditGoods.vue'
 // 定义总页数
 const totalPages = ref(0)
 // 定义当前页数
 const page = ref(1)
 // Naive UI 库中的消息提示
 const message = useMessage()
-// 存储轮播图的列表信息
+// 存储用户的列表信息
 const data = ref([])
-// 轮播图的id
-const img_id = ref(0)
+// 用户的id
+const user_id = ref('')
 
 const columns = [
 		{
-				title: '轮播图片',
-				key: 'img_url',
+				title: '头像',
+				key: 'avatar_url',
 				// 自定义单元格渲染，优先级低于列的 render   row 为获取到的当前行的数据
 				render(row){
 						// h() 创建虚拟 DOM 节点 (vnode)。 使用组件设置头像是否圆形，头像的地址，头像的尺寸
-						return h(NImage,{src:row.img_url,width:'100',height:'100'})
+						return h(NAvatar,{round:true,src:row.avatar_url,size:'medium'})
 				}
 		},
 		{
-				title: '标题',
-				key: 'title'
+				title: '姓名',
+				key: 'name'
 		},
 		{
-				title: '链接地址',
-				key: 'url'
+				title: '邮箱',
+				key: 'email'
 		},
 		{
 				title: '是否禁用',
@@ -118,17 +119,15 @@ const columns = [
 						return h(
 								NSwitch,
 								{
-										size:'medium',
+										size:'small',
 										color:'#1890ff',
 										activeColor:'#52c41a',
 										inactiveColor:'#d9d9d9',
 										activeValue:1,
 										inactiveValue:0,
-										// 绑定返回的轮播图列表数据参数中的是否锁定
+										// 绑定返回的用户列表数据参数中的是否锁定
 										value:row.is_locked == 1 ? false : true,
 										onClick:() => {
-												console.log(row,'row')
-												console.log(NSwitch,'nswitch')
 												if (row.is_locked == 1){
 														row.is_locked = 0
 												}else{
@@ -140,12 +139,8 @@ const columns = [
 				}
 		},
 		{
-				title: '排序',
-				key: 'seq',
-		},
-		{
-				title: '更新时间',
-				key: 'updated_at',
+				title: '创建时间',
+				key: 'created_at',
 		},
 		{
 				title: '操作',
@@ -158,10 +153,8 @@ const columns = [
 								color: '#1890ff',
 								strong:true,
 								onClick:() => {
-										console.log(row)
-										// 将轮播图列表数据的id赋值
-										img_id.value = row.id;
-										console.log(img_id.value)
+										// 将用户列表数据的id赋值
+										user_id.value = row.id;
 										// 点击编辑之后显示组件
 										showEditModal.value = true
 								}
@@ -171,10 +164,10 @@ const columns = [
 ]
 
 const pagination = ref(false as const)
-// 定义存储轮播图列表数据中的标题和链接地址
+// 定义存储用户列表数据中的名称和邮箱
 const formSearch = ref({
-		title:'',
-		url:''
+		name:'',
+		email:''
 })
 // 定义添加模态框组件的状态
 const showModal = ref(false)
@@ -184,65 +177,54 @@ const showEditModal = ref(false)
 const changeShowModal =　status => {
 		showModal.value = status
 }
-
-// 通过 onMounted 钩子调用封装后的轮播图列表接口
+const changeEditModal = status => {
+		showEditModal.value = status
+}
+// 通过 onMounted 钩子调用封装后的用户列表接口
 onMounted(() => {
-		// // 调用接口 获取轮播图列表数据
-		// users({}).then(res =>{
-		// 		console.log(res)
-		// 		// 将获取到的轮播图列表信息取出
-		// 		data.value = res.data
-		// 		// 将获取到的轮播图列表总页数信息取出
-		// 		totalPages.value = res.meta.pagination.total_pages
-		// 		// 将获取到的轮播图列表当前页信息取出
-		// 		page.value = res.meta.pagination.current_page
-		// })
-		getSlidesList({})
+		getUserList({})
 })
 // Naive UI库中分页组件通过事件触发的方法
 const updatePage = (pageNum) => {
-		
-		getSlidesList({
-				// 轮播图名称
-				title:formSearch.value.title,
-				// 轮播图邮箱
-				url:formSearch.value.url,
+		getUserList({
+				// 用户名称
+				name:formSearch.value.name,
+				// 用户邮箱
+				email:formSearch.value.email,
 				// 将当前页数绑定请求参数中的分页-当前页
 				current:pageNum
 		})
 }
-// 定义轮播图搜索点击事件触发的方法
+// 定义用户搜索点击事件触发的方法
 const searchSubmit = () => {
-		getSlidesList({
-				// 轮播图名称
-				title:formSearch.value.title,
-				// 轮播图链接
-				url:formSearch.value.url,
+		getUserList({
+				// 用户名称
+				name:formSearch.value.name,
+				// 用户邮箱
+				email:formSearch.value.email,
 				// 点击搜索之后获取第一页的数据
 				current:1
 		})
 }
-// 定义轮播图重置点击事件触发的方法
+// 定义用户重置点击事件触发的方法
 const resetReload = () => {
-		getSlidesList({})
+		getUserList({})
 		// 点击重置之后清空搜索栏内的数据
 		formSearch.value = {
-				title: '',
-				url: ''
+				name: '',
+				email: ''
 		}
 }
 // 优化接口
-const getSlidesList = (params) => {
+const getUserList = (params) => {
 		// 使用加载条
 		loadingBar.start()
-		// 获取轮播列表接口的请求
-		slides(params).then(res => {
-				console.log(res)
-				// 将获取到的轮播图列表信息重新绑定赋值
+		users(params).then(res => {
+				// 将获取到的用户列表信息重新绑定赋值
 				data.value = res.data
-				// 将获取到的轮播图列表总页数信息重新绑定赋值
+				// 将获取到的用户列表总页数信息重新绑定赋值
 				totalPages.value = res.meta.pagination.total_pages
-				// 将重新获取到的轮播图列表当前页信息重新绑定赋值
+				// 将重新获取到的用户列表当前页信息重新绑定赋值
 				page.value = res.meta.pagination.current_page
 				// 加载条结束
 				loadingBar.finish()
@@ -251,12 +233,12 @@ const getSlidesList = (params) => {
 				loadingBar.error()
 		})
 }
-// 定义添加轮播图之后自动刷新页面数据的方法
+// 定义添加用户之后自动刷新页面数据的方法
 const reload = ()=>{
-		getSlidesList({
+		getUserList({
 				current:page.value,
-				title:formSearch.value.title,
-				url:formSearch.value.url
+				name:formSearch.value.name,
+				email:formSearch.value.email
 		})
 }
 </script>

@@ -182,40 +182,10 @@ const changeEditModal = status => {
 }
 // 通过 onMounted 钩子调用封装后的用户列表接口
 onMounted(() => {
-		// // 调用接口 获取用户列表数据
-		// users({}).then(res =>{
-		// 		console.log(res)
-		// 		// 将获取到的用户列表信息取出
-		// 		data.value = res.data
-		// 		// 将获取到的用户列表总页数信息取出
-		// 		totalPages.value = res.meta.pagination.total_pages
-		// 		// 将获取到的用户列表当前页信息取出
-		// 		page.value = res.meta.pagination.current_page
-		// })
 		getUserList({})
 })
 // Naive UI库中分页组件通过事件触发的方法
 const updatePage = (pageNum) => {
-		// // 参数为当前页数
-		// console.log(pageNum)
-		// // 重新发送获取用户列表数据请求
-		// users({
-		// 		// 用户名称
-		// 		name:formSearch.value.name,
-		// 		// 用户邮箱
-		// 		email:formSearch.value.email,
-		// 		// 将当前页数绑定请求参数中的分页-当前页
-		// 		current:pageNum
-		// }).then(res => {
-		// 		// 重新获取用户列表中的数据
-		// 		console.log(res)
-		// 		// 将获取到的用户列表信息取出
-		// 		data.value = res.data
-		// 		// 将获取到的用户列表总页数信息取出
-		// 		totalPages.value = res.meta.pagination.total_pages
-		// 		// 将重新获取到的用户列表当前页信息取出
-		// 		page.value = res.meta.pagination.current_page
-		// })
 		getUserList({
 				// 用户名称
 				name:formSearch.value.name,
@@ -227,23 +197,6 @@ const updatePage = (pageNum) => {
 }
 // 定义用户搜索点击事件触发的方法
 const searchSubmit = () => {
-		// 调用接口重新获取用户列表数据
-		// users({
-		// 		// 定义调用接口获取用户列表数据的参数
-		// 		// 用户名称
-		// 		name:formSearch.value.name,
-		// 		// 用户邮箱
-		// 		email:formSearch.value.email,
-		// 		// 点击搜索之后获取第一页的数据
-		// 		current:1
-		// }).then(res => {
-		// 		// 将获取到的用户列表信息重新绑定赋值
-		// 		data.value = res.data
-		// 		// 将获取到的用户列表总页数信息重新绑定赋值
-		// 		totalPages.value = res.meta.pagination.total_pages
-		// 		// 将重新获取到的用户列表当前页信息重新绑定赋值
-		// 		page.value = res.meta.pagination.current_page
-		// })
 		getUserList({
 				// 用户名称
 				name:formSearch.value.name,

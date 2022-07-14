@@ -43,7 +43,7 @@ const routes:Array<RouteRecordRaw> = [
 			// 定义路由的小图标
 			icon:renderIcon(ImageOutline),
 			// 路由排序
-			sort:1
+			sort:6
 		},
 		// 定义子路由
 		// children 中的所有的路由都会继承上级路由
