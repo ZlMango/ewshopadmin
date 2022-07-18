@@ -119,7 +119,7 @@ const columns = [
 						return h(
 								NSwitch,
 								{
-										size:'small',
+										size:'large',
 										color:'#1890ff',
 										activeColor:'#52c41a',
 										inactiveColor:'#d9d9d9',
@@ -188,9 +188,9 @@ onMounted(() => {
 const updatePage = (pageNum) => {
 		getUserList({
 				// 用户名称
-				name:formSearch.value.name,
+				// name:formSearch.value.name,
 				// 用户邮箱
-				email:formSearch.value.email,
+				// email:formSearch.value.email,
 				// 将当前页数绑定请求参数中的分页-当前页
 				current:pageNum
 		})

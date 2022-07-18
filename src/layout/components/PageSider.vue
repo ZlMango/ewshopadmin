@@ -31,9 +31,9 @@ const menuOptions = generatorMenu(routeModuleList)
 // 菜单中点击菜单项触发的事件
 const handleUpdateValue = (key,item) => {
 		// 当前路由名称
-		console.log(key)
+		// console.log(key)
 		// 当前路由对象
-		console.log(item)
+		// console.log(item)
 		// 用户点击菜单时修改路由名称
 		defaultKey.value = key
 		// 添加路由
@@ -43,12 +43,12 @@ const handleUpdateValue = (key,item) => {
 onMounted(() => {
 		// 定义当前路由对象
 		const route = useRoute()
-		console.log(route)
+		// console.log(route)
 		// 获取当前路由的名称
 		const routeKey = route.name
 		// 页面加载完数据获取当前路由的名称
 		defaultKey.value = routeKey
-		console.log(routeKey)
+		// console.log(routeKey)
 })
 
 </script>

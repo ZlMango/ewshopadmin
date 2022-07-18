@@ -17,40 +17,37 @@
 										:model="formSearch"
 										label-placement="left"
 								>
-										<n-form-item label="姓名" path="name">
-												<n-input v-model:value="formSearch.name" placeholder="输入姓名" />
+										<n-form-item label="商品名" path="name">
+												<n-input style="width:300px" v-model:value="formSearch.name" placeholder="输入商品名" />
 										</n-form-item>
-										<n-form-item label="邮箱" path="email">
-												<n-input v-model:value="formSearch.age" placeholder="输入邮箱" />
+										<n-form-item label="评级" path="email">
+												<n-button  class="" :round="false"  attr-type="button" @click="searchSubmit">
+														好评
+												</n-button>
+												<n-button   attr-type="button" @click="searchSubmit">
+														中评
+												</n-button>
+												<n-button   attr-type="button" @click="searchSubmit">
+														差评
+												</n-button>
 										</n-form-item>
 										<n-form-item class="ml-auto">
-												<n-button type="info" class="mr-10" attr-type="button" @click="searchSubmit">
-														<n-icon>
-																<SearchOutline></SearchOutline>
-														</n-icon>
-														搜索
-												</n-button>
-												<n-button attr-type="button" @click="resetReload">
+												<n-button attr-type="button"  class="mr-2" @click="resetReload">
 														<n-icon>
 																<RefreshOutline></RefreshOutline>
 														</n-icon>
 														重置
 												</n-button>
+												<n-button type="info"   attr-type="button" @click="searchSubmit">
+														<n-icon>
+																<SearchOutline></SearchOutline>
+														</n-icon>
+														查询
+												</n-button>
 										</n-form-item>
 								</n-form>
 						</div>
 						<div class="mt-4 bg-white">
-								<div class="text-xl px-6 py-4 flex" >
-										<span>用户列表</span>
-										<span class="ml-auto ">
-												<NButton type="info" @click="showModal = true">
-														<n-icon>
-																<AddSharp></AddSharp>
-														</n-icon>
-														<span>新建</span>
-												</NButton>
-										</span>
-								</div>
 								<div>
 										<n-data-table
 												:columns="columns"
@@ -58,13 +55,8 @@
 												:pagination="pagination"
 												:bordered="false"
 										/>
-										<div class="p-4 flex justify-center pr-10">
-												<n-pagination v-model:page="page" @update:page="updatePage" :page-count="totalPages" />
-										</div>
 								</div>
 						</div>
-						<AddComment v-if="showModal" :showModal="showModal" @changeShowModal="changeShowModal" @reloadTable="reload"></AddComment>
-						<EditComment v-if="showEditModal" :user_id="user_id" :showEditModal="showEditModal" @changeEditModal="changeEditModal" @reloadTable="reload"></EditComment>
 				</div>
 		</div>
 </template>
@@ -96,70 +88,29 @@ const user_id = ref('')
 
 const columns = [
 		{
-				title: '头像',
-				key: 'avatar_url',
-				// 自定义单元格渲染，优先级低于列的 render   row 为获取到的当前行的数据
-				render(row){
-						// h() 创建虚拟 DOM 节点 (vnode)。 使用组件设置头像是否圆形，头像的地址，头像的尺寸
-						return h(NAvatar,{round:true,src:row.avatar_url,size:'medium'})
-				}
+				title: '内容',
+				
 		},
 		{
-				title: '姓名',
-				key: 'name'
+				title: '评级',
+				// key: 'name'
 		},
 		{
-				title: '邮箱',
-				key: 'email'
+				title: '星级',
+				// key: 'email'
 		},
 		{
-				title: '是否禁用',
-				key: 'is_locked',
-				render(row){
-						return h(
-								NSwitch,
-								{
-										size:'small',
-										color:'#1890ff',
-										activeColor:'#52c41a',
-										inactiveColor:'#d9d9d9',
-										activeValue:1,
-										inactiveValue:0,
-										// 绑定返回的用户列表数据参数中的是否锁定
-										value:row.is_locked == 1 ? false : true,
-										onClick:() => {
-												if (row.is_locked == 1){
-														row.is_locked = 0
-												}else{
-														row.is_locked = 1
-												}
-										}
-								}
-						)
-				}
+				title:'回复',
+				// key: 'is_locked',
+				
 		},
 		{
-				title: '创建时间',
-				key: 'created_at',
+				title: '评价时间',
+				// key: 'created_at',
 		},
 		{
 				title: '操作',
-				key: 'created_at',
-				render(row){
-						return h(
-								NButton,
-								{
-								size: 'small',
-								color: '#1890ff',
-								strong:true,
-								onClick:() => {
-										// 将用户列表数据的id赋值
-										user_id.value = row.id;
-										// 点击编辑之后显示组件
-										showEditModal.value = true
-								}
-						},'编辑')
-				}
+				// key: 'created_at',
 		}
 ]
 
@@ -221,11 +172,11 @@ const getUserList = (params) => {
 		loadingBar.start()
 		users(params).then(res => {
 				// 将获取到的用户列表信息重新绑定赋值
-				data.value = res.data
+				// data.value = res.data
 				// 将获取到的用户列表总页数信息重新绑定赋值
-				totalPages.value = res.meta.pagination.total_pages
+				// totalPages.value = res.meta.pagination.total_pages
 				// 将重新获取到的用户列表当前页信息重新绑定赋值
-				page.value = res.meta.pagination.current_page
+				// page.value = res.meta.pagination.current_page
 				// 加载条结束
 				loadingBar.finish()
 		}).catch(err => {

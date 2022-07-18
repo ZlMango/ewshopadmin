@@ -56,15 +56,6 @@ const routes:Array<RouteRecordRaw> = [
 				// 懒加载引入注册组件
 				component: () => import('@/views/order/index.vue')
 			},
-			{
-				path: 'refund',
-				name:`${routeName}_refund`,
-				meta:{
-					title:"退款列表",
-				},
-				// 懒加载引入注册组件
-				component: () => import('@/views/order/refund.vue')
-			},
 		]
 	}
 ]

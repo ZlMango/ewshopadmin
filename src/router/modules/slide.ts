@@ -39,7 +39,7 @@ const routes:Array<RouteRecordRaw> = [
 		// 定义路由的元数据
 		meta:{
 			// 定义路由的标题
-			title: '图片管理',
+			title: '轮播管理',
 			// 定义路由的小图标
 			icon:renderIcon(ImageOutline),
 			// 路由排序

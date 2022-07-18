@@ -4,7 +4,7 @@
 						<div>
 								<span class="text-slate-400 pr-2">首页</span> / <span class="pl-2">轮播图列表</span>
 								<div class="pt-3 text-xl text-black font-medium">
-										轮播图管理
+										轮播管理
 								</div>
 						</div>
 				</div>
